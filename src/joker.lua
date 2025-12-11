@@ -1239,25 +1239,26 @@ Bakery_API.Joker {
     end
 }
 
+-- KEEP_LITE
 -- from http://lua-users.org/wiki/SplitJoin
-function Split(str, delim)
-   if string.find(str, delim) == nil then return { str } end
-   local result = {}
-   local pat = "(.-)" .. delim .. "()"
-   local nb = 0
-   local lastPos
-   for part, pos in string.gfind(str, pat) do
-      nb = nb + 1
-      result[nb] = part
-      lastPos = pos
-   end
+local function Split(str, delim)
+    if string.find(str, delim) == nil then return { str } end
+    local result = {}
+    local pat = "(.-)" .. delim .. "()"
+    local nb = 0
+    local lastPos
+    for part, pos in string.gfind(str, pat) do
+        nb = nb + 1
+        result[nb] = part
+        lastPos = pos
+    end
     result[nb + 1] = string.sub(str, lastPos)
-   return result
+    return result
 end
 
 local MAX_NUM
 
-function parse_hyper_e(num)
+function Bakery_API.parse_hyper_e(num)
     local split_array = num:sub(2)
     local arr = {}
     local current_run = 0
@@ -1270,7 +1271,7 @@ function parse_hyper_e(num)
                 if i > 2 then val = val - 1 end
                 arr[i] = val
             elseif current_run == 2 then
-                local last = arr[i-1]
+                local last = arr[i - 1]
                 for _ = 1, val do
                     arr[i] = last
                     i = i + 1
@@ -1287,10 +1288,11 @@ function parse_hyper_e(num)
             end
         end
     end
-    return setmetatable({array = arr, sign = 1}, OmegaMeta)
+    return setmetatable({ array = arr, sign = 1 }, OmegaMeta)
 end
 
-MAX_NUM = parse_hyper_e("e10#10##10000")
+MAX_NUM = Bakery_API.parse_hyper_e("e10#10##10000")
+-- END_KEEP_LITE
 
 Bakery_API.Joker {
     key = "Lua",
@@ -1323,15 +1325,15 @@ Bakery_API.Joker {
                     )
                     local too_big
                     if type(mult) == 'table' and (
-                        (mult.isFinite and not mult:isFinite())
-                        or (mult.is_naneinf and mult:is_naneinf())
-                    ) then 
+                            (mult.isFinite and not mult:isFinite())
+                            or (mult.is_naneinf and mult:is_naneinf())
+                        ) then
                         too_big = true
                     else
                         mult = number_format(mult):gsub(",", "") .. card.ability.extra.concat_mult
                         if Talisman then
                             if mult:find("#") then
-                                mult, too_big = parse_hyper_e(mult)
+                                mult, too_big = Bakery_API.parse_hyper_e(mult)
                             else
                                 mult = Big.parse(mult, mult)
                             end
