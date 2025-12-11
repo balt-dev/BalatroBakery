@@ -1335,7 +1335,7 @@ Bakery_API.Joker {
                             if mult:find("#") then
                                 mult, too_big = Bakery_API.parse_hyper_e(mult)
                             else
-                                mult = Big.parse(mult, mult)
+                                mult = Big:parse(mult)
                             end
                         else
                             mult = tonumber(mult)
